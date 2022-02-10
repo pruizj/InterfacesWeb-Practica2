@@ -1,0 +1,99 @@
+<body>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>API_Ricky_Morty</title>
+        <link rel="stylesheet" href="style.css">
+        
+    </head>
+
+    <body>
+            <header id="header">
+                <input id="texto" type="text" name="character" />
+                <input type="button" class = "boton"  value="Search" onclick="loadContent()" />
+            </header>
+            <div id="pagina">
+                <section class="cabecera">
+                    <h1 class="title">The Rick and Morty API</h1>
+                    </section>
+                <div id="characters">
+    
+                </div>
+            </div>
+
+        
+        
+        <script>
+
+            function loadContent() {
+
+                document.getElementById("characters").innerHTML = "";
+
+                let documentInput = document.getElementById("texto").value;
+
+                fetch("https://rickandmortyapi.com/api/character/?name=" + documentInput)
+
+                    .then((result) => {
+                        if (result.status != 200) { throw new Error("Bad Server Response"); }
+                        return result.json();
+                    })
+
+
+                    .then((content) => {
+                        let characters = content.results;
+
+                        characters.map((character) => {
+                            let personaje = document.createElement("personaje");
+
+                            let img = document.createElement("img");
+
+                            let textos = document.createElement("textos");
+
+                            let name = document.createElement("name");
+                            let species = document.createElement("species");
+                            let status = document.createElement("status");
+                            let location = document.createElement("location");
+                            let episode = document.createElement("episode");
+
+                            img.src = character.image;
+                            name.innerHTML = character.name;
+                            species.innerHTML = character.species;
+                            status.innerHTML = character.status;
+                            location.innerHTML = `Last known location:\n${character.location.name}`;
+                            fetch(character.episode[0])
+                                .then((result) => {
+                                    if (result.status != 200) { throw new Error("Bad Server Response"); }
+                                    return result.json();
+                                })
+                                .then((epi) => {
+                                    episode.innerHTML = `First seen in:\n${epi.name}`;
+                                })
+
+                            const per = document.getElementById("characters").appendChild(personaje);
+
+                            const tex = per.appendChild(textos);
+
+                            per.appendChild(img);
+
+                            tex.appendChild(name);
+                            tex.appendChild(species);
+                            tex.appendChild(status);
+                            tex.appendChild(location);
+                            tex.appendChild(episode);
+
+                        })
+
+                    })
+
+                    .catch((error) => { console.log(error); });
+            }
+
+            
+        </script>
+    </body>
+
+    </html>
